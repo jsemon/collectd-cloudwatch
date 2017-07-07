@@ -120,10 +120,13 @@ class Whitelist(object):
     """
     _LOGGER = get_logger(__name__)
 
-    def __init__(self, whitelist_regex_list, blocked_metric_log_path):
+    def __init__(self, whitelist_regex_list, all_metric_log_path, blocked_metric_log_path):
+        self.all_metric_log = all_metric_log_path
         self.blocked_metric_log = BlockedMetricLogger(blocked_metric_log_path)
         self._whitelist_regex = re.compile("|".join(whitelist_regex_list))
         self._allowed_metrics = {}
+        with open(self.all_metric_log,'w'):
+            pass
 
     def is_whitelisted(self, metric_key):
         """
@@ -131,6 +134,7 @@ class Whitelist(object):
         :param metric_key: string describing all parts that make the actual name of a collectd metric
         :return: True if test is positive, False otherwise.
         """
+        self._create_all_metrics(metric_key)
         if metric_key not in self._allowed_metrics:
             if self._whitelist_regex.match(metric_key):
                 self._allowed_metrics[metric_key] = True
@@ -140,4 +144,16 @@ class Whitelist(object):
         return self._allowed_metrics[metric_key]
 
 
-
+    def _create_all_metrics(self, metric_key):
+        try:
+            with open(self.all_metric_log,'a+') as all_metric_log:
+                exists = False
+                for line in all_metric_log:
+                    if re.search(metric_key,line):
+                        exists = True
+                        break
+                if exists == False:
+                    all_metric_log.write(metric_key +'\n')
+        except IOError as e:
+            self._LOGGER.warning("Could not update list of all metrics '" + self._log_path +
+                                 "' with metric: '" + metric_key + "'. Reason: " + str(e))

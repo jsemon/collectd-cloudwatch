@@ -30,6 +30,7 @@ class ConfigHelper(object):
     _METADATA_SERVICE_ADDRESS = 'http://169.254.169.254/' 
     WHITELIST_CONFIG_PATH = _DEFAULT_AGENT_ROOT_FOLDER + 'whitelist.conf'
     BLOCKED_METRIC_PATH = _DEFAULT_AGENT_ROOT_FOLDER + 'blocked_metrics'
+    ALL_METRIC_PATH = _DEFAULT_AGENT_ROOT_FOLDER + 'all_metrics'
 
     def __init__(self, config_path=_DEFAULT_CONFIG_PATH, metadata_server=_METADATA_SERVICE_ADDRESS):
         self._config_path = config_path
@@ -48,7 +49,7 @@ class ConfigHelper(object):
         self.push_constant = False
         self.constant_dimension_value = ''
         self._load_configuration()
-        self.whitelist = Whitelist(WhitelistConfigReader(self.WHITELIST_CONFIG_PATH, self.pass_through).get_regex_list(), self.BLOCKED_METRIC_PATH)
+        self.whitelist = Whitelist(WhitelistConfigReader(self.WHITELIST_CONFIG_PATH, self.pass_through).get_regex_list(), self.ALL_METRIC_PATH ,self.BLOCKED_METRIC_PATH)
 
     @property
     def credentials(self):
