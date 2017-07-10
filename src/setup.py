@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 """
+THIS FILE IS NOT TO BE USED FOR CONFIGURING THIS PLUGIN IN THE NYTIMES ENVIRONMENT
+"""
+
+"""
 The installation script provides the following key functions:
 1. Installation of dependencies required for the plugin.
 2. Download and extraction of plugin source code into a predefined location /opt/collectd-plugins/
